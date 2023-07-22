@@ -32,7 +32,7 @@ func find(root string) []string {
 		if e != nil {
 			return e
 		}
-		if filepath.Ext(d.Name()) == "tf" {
+		if filepath.Ext(d.Name()) == ".tf" {
 			a = append(a, s)
 		}
 		return nil
