@@ -70,7 +70,11 @@ func LoadTestStep(path string) (resource.TestStep, error) {
 	var checkFuncs []resource.TestCheckFunc
 	for name, content := range state {
 		for key, value := range content {
-			checkFuncs = append(checkFuncs, resource.TestCheckResourceAttr(name, key, value))
+			if value == "<set>" {
+				checkFuncs = append(checkFuncs, resource.TestCheckResourceAttrSet(name, key))
+			} else {
+				checkFuncs = append(checkFuncs, resource.TestCheckResourceAttr(name, key, value))
+			}
 		}
 	}
 	step.Check = resource.ComposeAggregateTestCheckFunc(checkFuncs...)
