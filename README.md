@@ -46,6 +46,8 @@ func TestAccCoffeesDataSource(t *testing.T) {
     // Each file in test_dir/ will be converted to make one test step in the
     // final test case
     testCase := test.Load(t, "./test_dir/")
+	testCase.PreCheck = func() { testAccPreCheck(t) }
+	testCase.ProtoV6ProviderFactories = testAccProtoV6ProviderFactories
     resource.Test(t, testCase)
 }
 ```

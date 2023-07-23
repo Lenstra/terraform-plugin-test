@@ -9,7 +9,31 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func Load(t *testing.T, path string) resource.TestCase {
+func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase)) {
+	files := find(path)
+	dirs := map[string]struct{}{}
+	for _, path := range files {
+		dirs[filepath.Dir(path)] = struct{}{}
+	}
+	files = []string{}
+	for dir := range dirs {
+		files = append(files, dir)
+	}
+
+	sort.Strings(files)
+
+	for _, dir := range files {
+		t.Run(dir, func(t *testing.T) {
+			testCase := LoadCase(t, dir)
+			if f != nil {
+				f(t, &testCase)
+			}
+			resource.Test(t, testCase)
+		})
+	}
+}
+
+func LoadCase(t *testing.T, path string) resource.TestCase {
 	c := resource.TestCase{}
 
 	files := find(path)
