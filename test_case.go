@@ -5,11 +5,35 @@ import (
 	"path/filepath"
 	"sort"
 	"testing"
+	"time"
 
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 type IgnoreChangeFunc func(name, key, value string) bool
+
+func DefaultIgnoreChangeFunc(name, key, value string) bool {
+	if _, err := uuid.ParseUUID(value); err == nil {
+		return true
+	}
+
+	layouts := []string{
+		time.RFC3339,
+		time.RFC3339Nano,
+		time.DateTime,
+		time.DateOnly,
+		time.TimeOnly,
+		"2006-01-02 15:04:05.999999999 -0700 MST",
+	}
+	for _, layout := range layouts {
+		if _, err := time.Parse(layout, value); err == nil {
+			return true
+		}
+	}
+
+	return false
+}
 
 type TestOptions struct {
 	IgnoreChange IgnoreChangeFunc

@@ -44,7 +44,9 @@ func LoadTestSteps(path string, opts *TestOptions) ([]resource.TestStep, error) 
 
 func loadTestStep(path string, opts *TestOptions) (resource.TestStep, error) {
 	if opts == nil {
-		opts = &TestOptions{}
+		opts = &TestOptions{
+			IgnoreChange: DefaultIgnoreChangeFunc,
+		}
 	}
 
 	step := resource.TestStep{}
