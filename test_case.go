@@ -9,7 +9,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase)) {
+type IgnoreChangeFunc func(name, key, value string) bool
+
+type TestOptions struct {
+	IgnoreChange IgnoreChangeFunc
+}
+
+func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opts *TestOptions) {
 	files := find(path)
 	dirs := map[string]struct{}{}
 	for _, path := range files {
@@ -24,7 +30,7 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase)) {
 
 	for _, dir := range files {
 		t.Run(dir, func(t *testing.T) {
-			testCase := LoadCase(t, dir)
+			testCase := LoadCase(t, dir, opts)
 			if f != nil {
 				f(t, &testCase)
 			}
@@ -33,10 +39,10 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase)) {
 	}
 }
 
-func LoadCase(t *testing.T, path string) resource.TestCase {
+func LoadCase(t *testing.T, path string, opts *TestOptions) resource.TestCase {
 	c := resource.TestCase{}
 
-	steps, err := LoadTestSteps(path)
+	steps, err := LoadTestSteps(path, nil)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
