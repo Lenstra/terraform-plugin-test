@@ -36,16 +36,11 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase)) {
 func LoadCase(t *testing.T, path string) resource.TestCase {
 	c := resource.TestCase{}
 
-	files := find(path)
-	sort.Strings(files)
-
-	for _, filename := range files {
-		step, err := LoadTestStep(filename)
-		if err != nil {
-			t.Fatalf("failed to load step: %v", err)
-		}
-		c.Steps = append(c.Steps, step)
+	steps, err := LoadTestSteps(path)
+	if err != nil {
+		t.Fatal(err.Error())
 	}
+	c.Steps = steps
 
 	return c
 }
