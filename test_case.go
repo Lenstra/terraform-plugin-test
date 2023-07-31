@@ -13,6 +13,9 @@ import (
 
 type IgnoreChangeFunc func(name, key, value string) bool
 
+// DefaultIgnoreChangeFunc is the default IgnoreChangeFunc that will be used if
+// one is not given by the user. It will ignore any attribute that could be
+// an UUID or a time string.
 func DefaultIgnoreChangeFunc(name, key, value string) bool {
 	if _, err := uuid.ParseUUID(value); err == nil {
 		return true
@@ -35,10 +38,15 @@ func DefaultIgnoreChangeFunc(name, key, value string) bool {
 	return false
 }
 
+// TestOptions can be used to customize the behavior of terraform-plugin-test.
 type TestOptions struct {
 	IgnoreChange IgnoreChangeFunc
 }
 
+// Test is the main entrypoint of terraform-plugin-test. The user can
+// specify a function f to customize the TestCases before they are run and
+// optionaly set TestOptions to control how the attributes are compared to the
+// expected state file.
 func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opts *TestOptions) {
 	files := find(path)
 	dirs := map[string]struct{}{}
@@ -63,10 +71,11 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opt
 	}
 }
 
+// LoadCase loads a resource.TestCase from the given folder path.
 func LoadCase(t *testing.T, path string, opts *TestOptions) resource.TestCase {
 	c := resource.TestCase{}
 
-	steps, err := LoadTestSteps(path, nil)
+	steps, err := loadTestSteps(path, nil)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

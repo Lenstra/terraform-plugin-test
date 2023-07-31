@@ -25,7 +25,7 @@ var (
 	checkRe       = regexp.MustCompile(`^#\s*Check:\s+(.*)`)
 )
 
-func LoadTestSteps(path string, opts *TestOptions) ([]resource.TestStep, error) {
+func loadTestSteps(path string, opts *TestOptions) ([]resource.TestStep, error) {
 	var steps []resource.TestStep
 
 	files := find(path)
