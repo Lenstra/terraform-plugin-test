@@ -31,19 +31,23 @@ func TestLoadTestStep(t *testing.T) {
 		},
 		{
 			path:        "tests/missing-comment.tf",
-			expectError: "neither Check or ExpectError statements have been found",
+			expectError: "neither Check, ExpectError nor Import statements have been found in Terraform configuration",
 			want:        resource.TestStep{},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.path, func(t *testing.T) {
-			got, err := loadTestStep(tt.path, nil)
+			steps, err := loadTestStep(tt.path, nil)
 
 			if tt.expectError == "" {
 				require.NoError(t, err)
 			} else {
 				require.ErrorContains(t, err, tt.expectError)
+				return
 			}
+
+			require.Len(t, steps, 1)
+			got := steps[0]
 
 			if tt.expectCheckFunction {
 				require.NotNil(t, got.Check)

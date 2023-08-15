@@ -8,5 +8,5 @@ import (
 
 func TestLoadCase(t *testing.T) {
 	c := LoadCase(t, "./tests/test-case/", nil)
-	require.Len(t, c.Steps, 2)
+	require.Len(t, c.Steps, 3)
 }
