@@ -126,7 +126,7 @@ func loadTestStep(path string, opts *TestOptions) (resource.TestStep, error) {
 				continue
 			}
 
-			if value == "<set>" {
+			if value == "<set>" || opts.IgnoreChange(name, key, value) {
 				checkFuncs = append(checkFuncs, resource.TestCheckResourceAttrSet(name, key))
 			} else {
 				checkFuncs = append(checkFuncs, resource.TestCheckResourceAttr(name, key, value))
