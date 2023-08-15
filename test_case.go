@@ -75,7 +75,7 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opt
 func LoadCase(t *testing.T, path string, opts *TestOptions) resource.TestCase {
 	c := resource.TestCase{}
 
-	steps, err := loadTestSteps(path, nil)
+	steps, err := loadTestSteps(path, opts)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
