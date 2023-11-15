@@ -47,7 +47,7 @@ type TestOptions struct {
 // specify a function f to customize the TestCases before they are run and
 // optionaly set TestOptions to control how the attributes are compared to the
 // expected state file.
-func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opts *TestOptions) {
+func Test(t *testing.T, path string, f func(*testing.T, string, *resource.TestCase), opts *TestOptions) {
 	files := find(path)
 	dirs := map[string]struct{}{}
 	for _, path := range files {
@@ -64,7 +64,7 @@ func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opt
 		t.Run(dir, func(t *testing.T) {
 			testCase := LoadCase(t, dir, opts)
 			if f != nil {
-				f(t, &testCase)
+				f(t, dir, &testCase)
 			}
 			resource.Test(t, testCase)
 		})

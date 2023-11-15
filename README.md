@@ -45,7 +45,7 @@ and imported in the provider tests:
 func TestAccCoffeesDataSource(t *testing.T) {
     // Each file in test_dir/ will be converted to make one test step in the
     // final test case
-    test.Test(t, "./test_dir/", func(t *testing.T, tc *resource.TestCase) {
+    test.Test(t, "./test_dir/", func(t *testing.T, dir string, tc *resource.TestCase) {
 		tc.PreCheck = func() { testAccPreCheck(t) }
 		tc.ProtoV6ProviderFactories = testAccProtoV6ProviderFactories
 	}, nil)
@@ -141,7 +141,7 @@ LoadCase loads a resource.TestCase from the given folder path.
 
 ### func [Test](/test_case.go#L50)
 
-`func Test(t *testing.T, path string, f func(*testing.T, *resource.TestCase), opts *TestOptions)`
+`func Test(t *testing.T, path string, f func(*testing.T, string, *resource.TestCase), opts *TestOptions)`
 
 Test is the main entrypoint of terraform-plugin-test. The user can
 specify a function f to customize the TestCases before they are run and
